@@ -12,14 +12,14 @@ getArticlesList: async (req, res, result) => {
   var pageSize = req.params.pageSize;
   let newPageNo = pageNo * pageSize;
 
-  const getArticlesList = await articles.getArticlesList(
+  const getArticlesListResponce = await articles.getArticlesList(
     pageNo,
     pageSize,
     res
   );
 
  
-  if (getArticlesList.length == 0) {
+  if (getArticlesListResponce.length == 0) {
     errResponse(
       res,
       enums.http_codes.BadRequest,
@@ -34,7 +34,7 @@ getArticlesList: async (req, res, result) => {
     enums.http_codes.OK,
     config.successCode,
     messages.getArticlesList,
-    getArticlesList
+    getArticlesListResponce
   );
   return;
 },
@@ -43,17 +43,17 @@ getArticlesList: async (req, res, result) => {
 // ****************** Add Articles **************************
 
   addArticles: async (req, res, result) => {
+    var article_author_id=req.body.article_author_id;
     var title = req.body.title;
     var description = req.body.description;
-    var tags = req.body.tags;
     var content= req.body.content;
-    var author = req.body.author;
+    var tags = req.body.tags;
     const ArticlesResponse = await articles.addArticles(
+      article_author_id,
       title,
       description,
-      tags,
       content,
-      author
+      tags
     );
     if (ArticlesResponse.length != 0) {
       errResponse(
@@ -79,8 +79,8 @@ getArticlesList: async (req, res, result) => {
    // ***************** Articles Details **********************
    getArticlesDetails: async (req, res, result) => {
      var id = req.params.id;
-     const getArticlesDetails = await articles.getArticlesDetails(id, res);
-     if (getArticlesDetails.length == 0) {
+     const ArticlesDetails = await articles.getArticlesDetails(id, res);
+     if (ArticlesDetails.length == 0) {
        errResponse(
          res,
          enums.http_codes.BadRequest,
@@ -95,7 +95,7 @@ getArticlesList: async (req, res, result) => {
        enums.http_codes.OK,
        config.successCode,
        messages.getQuestionDeatails,
-       getArticlesDetails
+       ArticlesDetails
      );
      return;
    },

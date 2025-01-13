@@ -13,7 +13,19 @@ module.exports = {
 
 getArticlesList:(pageNo, pageSize, res) => {
     return new Promise((resolve, reject) => {
-      var queryStatement = `SELECT id, "title", "description", "tags", "content", "author", "status" FROM fresher_buddy_schema.articles ORDER BY id DESC LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
+      var queryStatement = `SELECT 
+      a.id, 
+      a.article_author_id, 
+      a.title, 
+      a.description, 
+      a.content, 
+      a.tags,
+      au.name AS article_author_name, 
+      au.email AS article_author_email 
+  FROM fresher_buddy_schema.articles AS a
+  INNER JOIN fresher_buddy_schema.article_author AS au 
+      ON a.article_author_id = au.id
+  ORDER BY a.id DESC LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`
       connection.query(queryStatement, (error, result) => {
         if (error) {
           errResponse(
@@ -32,13 +44,15 @@ getArticlesList:(pageNo, pageSize, res) => {
 
 
   // ****************** Add Article **************************
-  addArticles: (title,description,tags,content,author, res) => {
-    var status = 1;
+  addArticles: (article_author_id,title,description,content,tags, res) => {
+  
     return new Promise((resolve, reject) => {
-      const queryStatment ='INSERT INTO fresher_buddy_schema.articles("title", "description", "tags", "content", "author", "status") VALUES ($1, $2, $3, $4, $5,$6);'
+      const queryStatment =`INSERT INTO fresher_buddy_schema.articles(
+  article_author_id, title, description, content, tags)
+	VALUES ($1, $2, $3, $4, $5);`
       connection.query(
         queryStatment,
-        [title,description,tags,content,author,status],
+        [article_author_id,title,description,content,tags],
         (error, articles) => {
           if (error) {
             errResponse(
@@ -60,8 +74,18 @@ getArticlesList:(pageNo, pageSize, res) => {
  // ***************** Article Details **********************
  getArticlesDetails: async (id, res) => {
     return new Promise((resolve, reject) => {
-      var status = 1;
-      var queryStatement ='SELECT id, "title", "description", "tags", "content","author" ,status FROM fresher_buddy_schema.articles WHERE id = $1;'
+      var queryStatement =`SELECT 
+      a.id, 
+      a.article_author_id, 
+      a.title, 
+      a.description, 
+      a.content, 
+      a.tags,
+      au.name AS article_author_name, 
+      au.email AS article_author_email 
+  FROM fresher_buddy_schema.articles AS a
+  INNER JOIN fresher_buddy_schema.article_author AS au 
+      ON a.article_author_id = au.id WHERE a.id = $1;`
         connection.query(
         queryStatement,
         [id],

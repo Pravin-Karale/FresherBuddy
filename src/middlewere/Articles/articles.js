@@ -11,11 +11,11 @@ module.exports={
    // ****************** Add Quetion **************************
    addArticles: (req, res, next) => {
         const schema = Joi.object().keys({
-            title: Joi.string().min(1).required() ,
-            description: Joi.string().min(1).required(),
-            tags:Joi.string().min(1).required(),
+            article_author_id: Joi.number().min(1).required() ,
+            title: Joi.string().min(1).required(),
+            description:Joi.string().min(1).required(),
             content:Joi.string().min(1).required(),
-            author:Joi.string().min(1).required()
+            tags:Joi.string().min(1).required()
         });
         if (schema.validate(req.body).error) {
             let error = schema.validate(req.body).error
