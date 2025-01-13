@@ -10,11 +10,11 @@ module.exports={
    // ****************** Add Quetion **************************
    addQuestion: (req, res, next) => {
         const schema = Joi.object().keys({
-           Title: Joi.string().min(1).required() ,
-            Description: Joi.string().min(1).required(),
-            Tags:Joi.string().min(1).required(),
-            Subject_id: Joi.number().integer().min(1).required(),
-            Chapters:Joi.string().min(1).required()
+            subject_id: Joi.number().integer().min(1).required(),
+            chapter_id:Joi.number().min(1).required(),
+            title: Joi.string().min(1).required() ,
+            description: Joi.string().min(1).required(),
+            tags:Joi.string().min(1).required()
         });
         if (schema.validate(req.body).error) {
             let error = schema.validate(req.body).error
@@ -27,14 +27,13 @@ module.exports={
 
    // ******************Update quetion**************************
    
-    updateArticles:(req,res,next)=>{
+   updateQuestion:(req,res,next)=>{
         const schema=Joi.object().keys({
-            id:Joi.number().integer().min(1).required(),
-            Title: Joi.string().min(1).required() ,
-            Description: Joi.string().min(1).required(),
-            Tags:Joi.string().min(1).required(),
-            Subject_id: Joi.number().integer().min(1).required(),
-            Chapters:Joi.string().min(1).required()
+            subject_id: Joi.number().integer().min(1).required(),
+            chapter_id:Joi.number().min(1).required(),
+            title: Joi.string().min(1).required() ,
+            description: Joi.string().min(1).required(),
+            tags:Joi.string().min(1).required()
         });
         if(schema.validate(req.body).error){
             let error=schema.validate(req.body).error

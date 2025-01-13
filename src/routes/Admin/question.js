@@ -25,8 +25,8 @@ module.exports = function (app) {
 }
 
   // ****************** Update quetion ***********************
-  app.put("/apis/question/:id", validationMiddleware.updatequestion,(req, res) => {
-    question.updatequestion(req, res);
+  app.put("/apis/question/:id", validationMiddleware.updateQuestion,(req, res) => {
+    question.updateQuestion(req, res);
     }
   );
 

@@ -30,8 +30,8 @@ module.exports = {
  },
 
   // ******************Update quetion**************************
-  updatequestion: (req, res) => {
-    question.updatequestion(req, res, (result) => {
+  updateQuestion: (req, res) => {
+    question.updateQuestion(req, res, (result) => {
       res.send(result);
     });
   },

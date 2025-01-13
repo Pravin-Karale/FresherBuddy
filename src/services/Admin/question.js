@@ -7,14 +7,21 @@ const messages = require("../../messages/commanMessages");
 const connection = database.db.get;
 
 module.exports = {
+  // ****************** Quetion Lists ************************
 
-
-// ****************** Quetion Lists ************************
-
-getQuestionList: (pageNo, pageSize, res) => {
+  getQuestionList: (pageNo, pageSize, res) => {
     return new Promise((resolve, reject) => {
-      var queryStatement = `SELECT id, subject_id, chapter_id, title, description, tags, status FROM fresher_buddy_schema.questions
-       ORDER BY id DESC LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
+      var queryStatement = `SELECT q.id,q.subject_id,q.chapter_id,q.title,q.description,q.tags,q.status,s.title AS subject_title
+FROM 
+    fresher_buddy_schema.questions AS q
+INNER JOIN 
+    fresher_buddy_schema.subjects AS s
+ON 
+    q.subject_id = s.id
+ORDER BY 
+    q.id DESC
+LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
+
       connection.query(queryStatement, (error, result) => {
         if (error) {
           errResponse(
@@ -31,16 +38,15 @@ getQuestionList: (pageNo, pageSize, res) => {
     });
   },
 
-
   // ****************** Add Quetion **************************
-  addQuestion: (Title, Description, Tags, Subject_id, Chapters, res) => {
-    var status = 1;
+
+  addQuestion: (subject_id, chapter_id, title, description, tags, res) => {
     return new Promise((resolve, reject) => {
       const queryStatment =
-        'INSERT INTO "fresher_buddy_schema"."questions"( "Title", "Description", "Tags", "Subject_id", "Chapters", status) VALUES ( $1, $2, $3, $4, $5, $6);';
+        'INSERT INTO "fresher_buddy_schema"."questions"("subject_id", "chapter_id", "title", "description", "tags") VALUES ( $1, $2, $3, $4, $5);';
       connection.query(
         queryStatment,
-        [Title, Description, Tags, Subject_id, Chapters, status],
+        [subject_id, chapter_id, title, description, tags],
         (error, question) => {
           if (error) {
             errResponse(
@@ -58,14 +64,14 @@ getQuestionList: (pageNo, pageSize, res) => {
     });
   },
 
-  
- // ***************** Question Details **********************
- getQuestioDetails: async (id, res) => {
+  // ***************** Question Details **********************
+
+  getQuestioDetails: async (id, res) => {
     return new Promise((resolve, reject) => {
       var status = 1;
       var queryStatement =
-        'SELECT id, "Title", "Description", "Tags", "Subject_id", "Chapters", status FROM "fresher_buddy_schema"."questions" WHERE id = $1 AND status = $2';
-        connection.query(
+        'SELECT id, "subject_id", "chapter_id", "title", "description", "tags", status FROM "fresher_buddy_schema"."questions" WHERE id = $1 AND status = $2';
+      connection.query(
         queryStatement,
         [id, status],
         function (error, result, fields) {
@@ -86,49 +92,54 @@ getQuestionList: (pageNo, pageSize, res) => {
     });
   },
 
-
   // ***************** Question Delete **********************
-selecteQuestion: (id, res) => {
-  return new Promise((resolve, reject) => {
-      var queryStatement = `SELECT id, "Title", "Description", "Tags", "Subject_id", "Chapters", status FROM fresher_buddy_schema.questions WHERE id=$1 AND status=1;`
+  selecteQuestion: (id, res) => {
+    return new Promise((resolve, reject) => {
+      var queryStatement = `SELECT id, "title", "description", "tags", "subject_id", "chapter_id", status FROM fresher_buddy_schema.questions WHERE id=$1 AND status=1;`;
 
       connection.query(queryStatement, [id], (error, result) => {
-          if (error) {
-              errResponse(res, enums.http_codes.InternalServerError, config.errCodeNoRecordFound,messages.NoRecordFound,messages.emptyString)
-              return;
-          }
-          resolve(result.rows);
+        if (error) {
+          errResponse(
+            res,
+            enums.http_codes.InternalServerError,
+            config.errCodeNoRecordFound,
+            messages.NoRecordFound,
+            messages.emptyString
+          );
+          return;
+        }
+        resolve(result.rows);
       });
-  })
-},
-deleteQuestion: (id, res) => {
-  return new Promise((resolve, reject) => {
-      var queryStatement = `UPDATE fresher_buddy_schema.questions SET status=0 WHERE id=$1;`
+    });
+  },
+  deleteQuestion: (id, res) => {
+    return new Promise((resolve, reject) => {
+      var queryStatement = `UPDATE fresher_buddy_schema.questions SET status=0 WHERE id=$1;`;
       connection.query(queryStatement, [id], (error, result) => {
-          if (error) {
-              errResponse(res, enums.http_codes.InternalServerError, config.errCodeNoRecordFound,messages.questionDeleteError,messages.emptyString)
-              return
-          }
-          resolve(result.rows)
-      })
-  })
-},
-
-
-
+        if (error) {
+          errResponse(
+            res,
+            enums.http_codes.InternalServerError,
+            config.errCodeNoRecordFound,
+            messages.questionDeleteError,
+            messages.emptyString
+          );
+          return;
+        }
+        resolve(result.rows);
+      });
+    });
+  },
 
   // ******************Update quetion**************************
-  updatequestion: (id, Title, Description, Tags, Subject_id, Chapters, res) => {
+  updateQuestion: (id, subject_id, chapter_id, title, description, tags, res) => {
     return new Promise((resolve, reject) => {
-      const queryStatment = `UPDATE fresher_buddy_schema.questions SET id=$1, "Title"=$2, "Description"=$3, "Tags"=$4, "Subject_id"=$5, "Chapters"=$6, status=$7S WHERE id=$1 AND status=1;`
+      const queryStatment = `UPDATE fresher_buddy_schema.questions SET "subject_id"=$2, "chapter_id"=$3,"title"=$4, "description"=$5, "tags"=$6,  status=$7 WHERE id = $1 AND status = 1;`;
 
-  //     `UPDATE "fresher_buddy_schema"."questions"
-	// SET  "Title"=$2, "Description"=$3, "Tags"=$4, "Subject_id"=$5, "Chapters"=$6
-	// WHERE "id"= $1 AND status=1;`
       connection.query(
         queryStatment,
-        [id, Title, Description, Tags, Subject_id, Chapters],
-        (error, updatequestion) => {
+        [id, subject_id, chapter_id, title, description, tags ],
+        (error, updateQuestion) => {
           console.log(error, "error");
           if (error) {
             errResponse(
@@ -140,10 +151,9 @@ deleteQuestion: (id, res) => {
             );
             return;
           }
-          resolve(updatequestion.rows);
+          resolve(updateQuestion.rows);
         }
       );
     });
   },
-
 };
