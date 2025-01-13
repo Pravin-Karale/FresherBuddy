@@ -134,7 +134,7 @@ LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
   // ******************Update quetion**************************
   updateQuestion: (id, subject_id, chapter_id, title, description, tags, res) => {
     return new Promise((resolve, reject) => {
-      const queryStatment = `UPDATE fresher_buddy_schema.questions SET "subject_id"=$2, "chapter_id"=$3,"title"=$4, "description"=$5, "tags"=$6,  status=$7 WHERE id = $1 AND status = 1;`;
+      const queryStatment = `UPDATE fresher_buddy_schema.questions SET "subject_id"=$2, "chapter_id"=$3,"title"=$4, "description"=$5, "tags"=$6 WHERE id = $1 AND status = 1;`;
 
       connection.query(
         queryStatment,

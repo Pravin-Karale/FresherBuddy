@@ -14,7 +14,7 @@ module.exports={
             chapter_id:Joi.number().min(1).required(),
             title: Joi.string().min(1).required() ,
             description: Joi.string().min(1).required(),
-            tags:Joi.string().min(1).required()
+            tags:Joi.string().min(1).allow("",null),
         });
         if (schema.validate(req.body).error) {
             let error = schema.validate(req.body).error
@@ -31,9 +31,9 @@ module.exports={
         const schema=Joi.object().keys({
             subject_id: Joi.number().integer().min(1).required(),
             chapter_id:Joi.number().min(1).required(),
-            title: Joi.string().min(1).required() ,
+            title: Joi.string().min(1).required(),
             description: Joi.string().min(1).required(),
-            tags:Joi.string().min(1).required()
+            tags:Joi.string().min(1).allow("",null),
         });
         if(schema.validate(req.body).error){
             let error=schema.validate(req.body).error

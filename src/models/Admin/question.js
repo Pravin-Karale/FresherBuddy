@@ -150,7 +150,8 @@ module.exports = {
       description,
       tags
     );
-    if (updateQuestion.length == 0) {
+    
+    if (updateQuestion.length !== 0) {
       errResponse(
         res,
         enums.http_codes.BadRequest,
