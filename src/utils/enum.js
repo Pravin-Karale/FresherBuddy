@@ -6,7 +6,6 @@ module.exports={
         Unautherized:401,
         noRecordFound:404,
         InternalServerError:500,
-        
     }
 
 }

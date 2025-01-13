@@ -70,7 +70,7 @@ LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
     return new Promise((resolve, reject) => {
       var status = 1;
       var queryStatement =
-        'SELECT id, "subject_id", "chapter_id", "title", "description", "tags", status FROM "fresher_buddy_schema"."questions" WHERE id = $1 AND status = $2';
+        'SELECT id, subject_id, chapter_id, title, description, tags, status FROM "fresher_buddy_schema"."questions" WHERE id = $1 AND status = $2';
       connection.query(
         queryStatement,
         [id, status],

@@ -22,11 +22,12 @@ module.exports = function (app) {
   app.delete('/apis/admin/question/:id', validationMiddleware.deleteQuestion, (req, res) => {
 		question.deleteQuestion(req, res);
 	});
-}
 
   // ****************** Update quetion ***********************
   app.put("/apis/question/:id", validationMiddleware.updateQuestion,(req, res) => {
     question.updateQuestion(req, res);
     }
   );
+}
+
 
