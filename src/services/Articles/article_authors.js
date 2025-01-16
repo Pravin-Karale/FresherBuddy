@@ -8,14 +8,14 @@ const connection = database.db.get;
 
 module.exports = {
   // ****************** Add Article **************************
-  addArticleAuthor: (author_name,author_email, res) => {
-    var status = 1;
+  addArticleAuthor:(name,email, res) => {
+  
     return new Promise((resolve, reject) => {
-      const queryStatment ='INSERT INTO fresher_buddy_schema.article_authors( author_name, author_email, status) VALUES ( $1, $2, $3);'
+      const queryStatment ='INSERT INTO fresher_buddy_schema.article_author( name, email, status) VALUES ($1, $2, $3);'
 
       connection.query(
         queryStatment,
-        [author_name,author_email,status],
+        [name,email],
         (error, author) => {
           if (error) {
             errResponse(
@@ -28,7 +28,7 @@ module.exports = {
             return;
           }
           console.log(author,"author");
-          resolve(author.rowCount);
+          resolve(author.rows);
         }
       )
     });
@@ -36,7 +36,8 @@ module.exports = {
 
   articleAutherList:(pageNo, pageSize, res) => {
       return new Promise((resolve, reject) => {
-        var queryStatement = `SELECT author_name, author_email, status FROM fresher_buddy_schema.article_authors ORDER BY id DESC LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`
+        var queryStatement = `SELECT id, name, email, status
+	FROM fresher_buddy_schema.article_author ORDER BY id DESC LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`
         connection.query(queryStatement, (error, result) => {
           if (error) {
             console.log(error,"error");

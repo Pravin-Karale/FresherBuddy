@@ -31,8 +31,6 @@ module.exports = function (app) {
   });
 
 
-
-
 // ****************Search Articles***********************
 app.get('/apis/article/search/:searchText', (req, res) => {
   articles.searchAllArticles(req, res);

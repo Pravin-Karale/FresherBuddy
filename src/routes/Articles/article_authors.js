@@ -13,5 +13,4 @@ module.exports= function (app){
     author.articleAutherList(req, res);
    });
 
-
 }

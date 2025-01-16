@@ -55,7 +55,7 @@ getArticlesList: async (req, res, result) => {
       content,
       tags
     );
-    if (ArticlesResponse.length != 0) {
+    if (ArticlesResponse.length !== 0) {
       errResponse(
         res,
         enums.http_codes.BadRequest,
@@ -102,30 +102,41 @@ getArticlesList: async (req, res, result) => {
 
   // ******************Update Articles**************************
    updatearticle: async (req, res, result) => {
-
-    var id = req.params.id;
-    var title = req.body.title;
-    var description = req.body.description;
-    var tags = req.body.tags;
-    var content = req.body.content;
-    var authors = req.body.authors;
-
-    const selectarticleResponce = await articles.selectarticle(id, res);
-    console.log(selectarticleResponce,"selectarticleResponce");
-     
-    if (selectarticleResponce.length == 0) {
-        errResponse(res, enums.http_codes.BadRequest, config.errCodeNoRecordFound,messages.NoRecordFound,messages.emptyString )
-        return
-    }
-    const updatearticleResponce = await articles.updatearticle(id,title,description,tags,content,authors,res);
-    console.log(updatearticleResponce, "updatearticleResponce");
-    if (updatearticleResponce.length != 0) {
-        errResponse(res, enums.http_codes.InternalServerError, config.errorCode,messages.ArticleUpdateError,messages.emptyString)
-        return
-    }
-    successResponse(res, enums.http_codes.OK, config.successCode, messages.ArticleUpdate,updatearticleResponce)
-},
-
+       var id = req.params.id;
+       var article_author_id = req.body.article_author_id;
+       var title = req.body.title;
+       var description = req.body.description;
+       var content = req.body.content;
+       var tags = req.body.tags;
+   
+       const updatearticle = await articles.updatearticle(
+         id,
+         article_author_id,
+         title,
+         description,
+         content,
+         tags
+       );
+       
+       if (updatearticle.length !== 0) {
+         errResponse(
+           res,
+           enums.http_codes.BadRequest,
+           config.errorCode,
+           messages.questionError,
+           messages.emptyString
+         );
+         return;
+       }
+       successResponse(
+         res,
+         enums.http_codes.OK,
+         config.successCode,
+         messages.questionUpdated,
+         updatearticle.rows
+       );
+       return;
+     },
 
   
  // ***************** Article Deleted **********************

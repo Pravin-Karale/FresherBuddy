@@ -7,14 +7,10 @@ const enums=require('../../utils/enum')
 module.exports={
 
 
-   // ****************** Add Quetion **************************
-   addQuestion: (req, res, next) => {
+   // ****************** Add Subject **************************
+   addSubject: (req, res, next) => {
         const schema = Joi.object().keys({
-            subject_id: Joi.number().integer().min(1).required(),
-            chapter_id:Joi.number().min(1).required(),
-            title: Joi.string().min(1).required(),
-            description: Joi.string().min(1).required(),
-            tags:Joi.string().min(1).allow("",null),
+            title: Joi.string().min(1).required() 
         });
         if (schema.validate(req.body).error) {
             let error = schema.validate(req.body).error
@@ -27,15 +23,12 @@ module.exports={
         }
     },
 
-   // ******************Update quetion**************************
+   // ******************Update Subject**************************
    
-   updateQuestion:(req,res,next)=>{
+   updateSubject:(req,res,next)=>{
         const schema=Joi.object().keys({
             subject_id: Joi.number().integer().min(1).required(),
-            chapter_id:Joi.number().min(1).required(),
-            title: Joi.string().min(1).required(),
-            description: Joi.string().min(1).required(),
-            tags:Joi.string().min(1).allow("",null),
+            title: Joi.string().min(1).required() 
         });
         if(schema.validate(req.body).error){
             console.log(error,"error");
@@ -48,14 +41,13 @@ module.exports={
         }
     },
 
-  // ***************** Question Delete **********************
-    deleteQuestion:(req,res,next)=>{
+  // ***************** Subject Delete **********************
+    deleteSubject:(req,res,next)=>{
         const schema=Joi.object().keys({
             id:Joi.number().integer().min(1).required()
         })
+        console.log(req.params,"req.params");
         if (schema.validate(req.params).error) {
-            console.log(error,"error");
-            
             let error = schema.validate(req.params).error
             errResponce(res,enums.http_codes.BadRequest,config.errorCode,messages.NoRecordFound,messages.emptyString)
             return

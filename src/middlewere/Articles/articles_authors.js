@@ -11,8 +11,8 @@ module.exports={
    // ****************** Add Quetion **************************
    addArticleAuthor: (req, res, next) => {
         const schema = Joi.object().keys({
-            author_name: Joi.string().min(1).required() ,
-            author_email: Joi.string().min(1).required()
+            name: Joi.string().min(1).required() ,
+            email: Joi.string().min(1).required()
             
         });
         if (schema.validate(req.body).error) {

@@ -7,21 +7,13 @@ const messages = require("../../messages/commanMessages");
 const connection = database.db.get;
 
 module.exports = {
-  // ****************** Quetion Lists ************************
+  // ****************** Subject Lists ************************
 
-  getQuestionList: (pageNo, pageSize, res) => {
+  getSubjectList: (pageNo, pageSize, res) => {
     return new Promise((resolve, reject) => {
-      var queryStatement = `SELECT q.id,q.subject_id,q.chapter_id,q.title,q.description,q.tags,q.status,s.title AS subject_title
-FROM 
-    fresher_buddy_schema.interview_questions AS q
-INNER JOIN 
-    fresher_buddy_schema.subjects AS s
-ON 
-    q.subject_id = s.id
-ORDER BY 
-    q.id DESC
-LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
-
+      var queryStatement = `SELECT id, title, status FROM fresher_buddy_schema.subjects ORDER BY id DESC LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
+      console.log('queryStatement', queryStatement);
+      
       connection.query(queryStatement, (error, result) => {
         if (error) {
           errResponse(
@@ -38,16 +30,16 @@ LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
     });
   },
 
-  // ****************** Add Quetion **************************
+  // ****************** Add Subject **************************
 
-  addQuestion: (subject_id, chapter_id, title, description, tags, res) => {
+  addSubject: (title,status,res) => {
     return new Promise((resolve, reject) => {
-      const queryStatment =
-        'INSERT INTO "fresher_buddy_schema"."interview_questions"("subject_id", "chapter_id", "title", "description", "tags") VALUES ( $1, $2, $3, $4, $5);';
+      const queryStatment =`INSERT INTO fresher_buddy_schema.subjects(title,status) VALUES ($1,$2)RETURNING id ;`
+     
       connection.query(
         queryStatment,
-        [subject_id, chapter_id, title, description, tags],
-        (error, question) => {
+        [title,status],
+        (error, subject) => {
           if (error) {
             errResponse(
               res,
@@ -58,18 +50,20 @@ LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
             );
             return;
           }
-          resolve(question.rows);
+          resolve(subject.rows);
         }
       );
     });
   },
 
-  // ***************** Question Details **********************
+  // ***************** Subject Details **********************
 
-  getQuestioDetails: async (id, res) => {
+  getSubjectDetails: async (id, res) => {
     return new Promise((resolve, reject) => {
       var status = 1;
-      var queryStatement =`SELECT id, subject_id, chapter_id, title, description, tags, status FROM "fresher_buddy_schema"."interview_questions" WHERE id = $1 AND status = $2`;
+      var queryStatement =
+        `SELECT title
+	FROM fresher_buddy_schema.subjects WHERE id = $1 AND status = $2`;
       connection.query(
         queryStatement,
         [id, status],
@@ -84,17 +78,16 @@ LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
             );
             return;
           }
-
           resolve(result.rows);
         }
       );
     });
   },
 
-  // ***************** Question Delete **********************
-  selecteQuestion: (id, res) => {
+  // ***************** Subject Delete **********************
+  selectSubject: (id, res) => {
     return new Promise((resolve, reject) => {
-      var queryStatement = `SELECT id, "title", "description", "tags", "subject_id", "chapter_id", status FROM fresher_buddy_schema.interview_questions WHERE id=$1 AND status=1;`;
+      var queryStatement = `SELECT title FROM fresher_buddy_schema.subjects WHERE id=$1 AND status=1;`;
 
       connection.query(queryStatement, [id], (error, result) => {
         if (error) {
@@ -107,13 +100,13 @@ LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
           );
           return;
         }
-        resolve(result);
+        resolve(result.rows);
       });
     });
   },
-  deleteQuestion: (id, res) => {
+  deleteSubject: (id, res) => {
     return new Promise((resolve, reject) => {
-      var queryStatement = `UPDATE fresher_buddy_schema.interview_questions SET status=0 WHERE id=$1;`;
+      var queryStatement = `UPDATE fresher_buddy_schema.subjects SET status=0 WHERE id=$1;`;
       connection.query(queryStatement, [id], (error, result) => {
         if (error) {
           errResponse(
@@ -125,16 +118,15 @@ LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
           );
           return;
         }
-        resolve(result);
+        resolve(result.rows);
       });
     });
   },
 
-  // ******************Update quetion**************************
-  updateQuestion: (id, subject_id, chapter_id, title, description, tags, res) => {
+  // ******************Update Subject**************************
+  updateSubject: (id, subject_id, chapter_id, title, description, tags, res) => {
     return new Promise((resolve, reject) => {
-      const queryStatment = `UPDATE fresher_buddy_schema.interview_questions SET "subject_id"=$2, "chapter_id"=$3,"title"=$4, "description"=$5, "tags"=$6 WHERE id = $1 AND status = 1;`;
-
+      const queryStatment =`UPDATE fresher_buddy_schema.subjects SET  title=$2 WHERE id = $1 AND status = 1;`
       connection.query(
         queryStatment,
         [id, subject_id, chapter_id, title, description, tags ],
@@ -150,7 +142,7 @@ LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
             );
             return;
           }
-          resolve(updateQuestion.rows);
+          resolve(updateSubject.rows);
         }
       );
     });

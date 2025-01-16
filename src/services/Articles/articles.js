@@ -20,6 +20,7 @@ getArticlesList:(pageNo, pageSize, res) => {
       a.description, 
       a.content, 
       a.tags,
+      a.status,
       au.name AS article_author_name, 
       au.email AS article_author_email 
   FROM fresher_buddy_schema.articles AS a
@@ -57,7 +58,7 @@ getArticlesList:(pageNo, pageSize, res) => {
           if (error) {
             errResponse(
               res,
-              enums.http_codes.BadRequest,
+              enums.http_codes.InternalServerError,
               config.errorCode,
               messages.serverErrorMessage,
               messages.emptyString
@@ -84,8 +85,7 @@ getArticlesList:(pageNo, pageSize, res) => {
       au.name AS article_author_name, 
       au.email AS article_author_email 
   FROM fresher_buddy_schema.articles AS a
-  INNER JOIN fresher_buddy_schema.article_author AS au 
-      ON a.article_author_id = au.id WHERE a.id = $1;`
+  INNER JOIN fresher_buddy_schema.article_author AS au ON a.article_author_id = au.id WHERE a.id = $1;`
         connection.query(
         queryStatement,
         [id],
@@ -113,46 +113,38 @@ getArticlesList:(pageNo, pageSize, res) => {
 
 
  // ****************** Update Article **************************
-  selectarticle: (id, res) => {
+ updatearticle: (id,article_author_id,title,description,content,tags, res) => {
     return new Promise((resolve, reject) => {
-      
-        var queryStatement =`SELECT id, title, description, tags, content, author, article_id
-	FROM fresher_buddy_schema.articles WHERE id=$1 AND status=1;`
-       
-        connection.query(queryStatement, [id], (error, result) => {
+      const queryStatment = `UPDATE fresher_buddy_schema.articles
+	SET article_author_id=$2,title=$3, description=$4, content=$5,tags=$6
+	WHERE id=$1 AND status=1;`;
 
-            if (error) {
-              console.log(error,"errror");
-              
-                errResponse(res, enums.http_codes.InternalServerError, config.errCodeNoRecordFound,messages.serverErrorMessage,messages.emptyString)
-                return
-            } 
-            resolve(result)
-        })
-    })
-},
-
-updatearticle: (id,title, description, tags, content,authors, res) => {
-    return new Promise((resolve, reject) => {
-      var status=1
-        var queryStatement =`UPDATE fresher_buddy_schema.articles
-	SET id=$1, title=$2, description=$3, tags=$4, content=$5, author=$6, article_id=$7
-	WHERE WHERE id=$1 AND status=1;` 
-        connection.query(queryStatement, [ id, title, description, tags, content,authors,status], (error, result) => {
-            if (error) { 
-                errResponse(res, enums.http_codes.InternalServerError, config.errCodeNoRecordFound,messages.NoRecordFound,messages.emptyString)
-                return;
-            }
-            resolve(result.rows);
-        });
-    })
-},
+      connection.query(
+        queryStatment,
+        [id,article_author_id,title,description,content,tags],
+        (error, updatearticle) => {
+          console.log(error, "error");
+          if (error) {
+            errResponse(
+              res,
+              enums.http_codes.InternalServerError,
+              config.errCodeNoRecordFound,
+              messages.NoRecordFound,
+              messages.emptyString
+            );
+            return;
+          }
+          resolve(updatearticle.rows);
+        }
+      );
+    });
+  },
 
 
 // ***************** Article Deleted **********************
  selecteArticle: (id, res) => {
   return new Promise((resolve, reject) => {
-      var queryStatement = `SELECT "title", "description", "tags", "content", status FROM fresher_buddy_schema.articles WHERE id=$1 AND status=1;`
+      var queryStatement = `SELECT id, article_author_id, title, description, content, tags, status FROM fresher_buddy_schema.articles WHERE id=$1 AND status=1;`
 
       connection.query(queryStatement, [id], (error, result) => {
           if (error) {

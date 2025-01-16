@@ -6,7 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 // Access the environment variables
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 
 const app = express();
 app.use(bodyParser.json());

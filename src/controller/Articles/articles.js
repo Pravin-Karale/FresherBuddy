@@ -1,21 +1,21 @@
 const articles = require("../../models/Articles/articles");
 
 module.exports = {
-  // ******************get quetionList**************************
+  // ******************get ArticleList**************************
   getArticlesList: (req, res) => {
     articles.getArticlesList(req, res, (result) => {
       res.send(result);
     });
   },
 
-   // ****************** Add Quetion **************************
+   // ****************** Add Article **************************
   addArticles: (req, res) => {
     articles.addArticles(req, res, (result) => {
       res.send(result);
     });
   },
 
-   // ***************** Question Details **********************
+   // ***************** Article Details **********************
   getArticlesDetails: (req, res) => {
     articles.getArticlesDetails(req, res, (result) => {
       res.send(result);

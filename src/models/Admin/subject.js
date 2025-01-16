@@ -1,23 +1,23 @@
 const messages = require("../../messages/commanMessages");
 const config = require("../../config/config");
 const enums = require("../../utils/enum");
-const question = require("../../services/Admin/question");
+const subject = require("../../services/Admin/subject");
 const { errResponse, successResponse } = require("../../messages/Responce");
 
 module.exports = {
-  // ****************** Quetion Lists ************************
-  getQuestionList: async (req, res, result) => {
+  // ****************** Subject Lists ************************
+  getSubjectList: async (req, res, result) => {
     var pageNo = req.params.pageNo;
     var pageSize = req.params.pageSize;
     let newPageNo = pageNo * pageSize;
 
-    const getQuestionList = await question.getQuestionList(
+    const getSubjectList = await subject.getSubjectList(
       pageNo,
       pageSize,
       res
     );
 
-    if (getQuestionList.length == 0) {
+    if (getSubjectList.length == 0) {
       errResponse(
         res,
         enums.http_codes.BadRequest,
@@ -32,28 +32,22 @@ module.exports = {
       enums.http_codes.OK,
       config.successCode,
       messages.getquestionList,
-      getQuestionList
+      getSubjectList
     );
     return;
   },
 
-  // ****************** Add Quetion **************************
+  // ****************** Add Subject **************************
 
-  addQuestion: async (req, res, result) => {
-    var subject_id = req.body.subject_id;
-    var chapter_id = req.body.chapter_id;
-    var title = req.body.title;
-    var description = req.body.description;
-    var tags = req.body.tags;
+  addSubject: async (req, res, result) => {
 
-    const questionResponse = await question.addQuestion(
-      subject_id,
-      chapter_id,
+    let title = req.body.title;
+    let status=req.body.status
+    const addSubject = await subject.addSubject(
       title,
-      description,
-      tags
+      status
     );
-    if (questionResponse.length !== 0) {
+    if (addSubject.length !== 0) {
       errResponse(
         res,
         enums.http_codes.BadRequest,
@@ -73,11 +67,11 @@ module.exports = {
     return;
   },
 
-  // ***************** Question Details **********************
-  getQuestioDetails: async (req, res, result) => {
+  // ***************** Subject Details **********************
+  getSubjectDetails: async (req, res, result) => {
     var id = req.params.id;
-    const getquestion = await question.getQuestioDetails(id, res);
-    if (getquestion.length == 0) {
+    const getSubjectDetails = await subject.getSubjectDetails(id, res);
+    if (getSubjectDetails.length == 0) {
       errResponse(
         res,
         enums.http_codes.BadRequest,
@@ -97,13 +91,13 @@ module.exports = {
     return;
   },
 
-  // ***************** Question Delete **********************
+  // ***************** Subject Delete **********************
 
-  deleteQuestion: async (req, res, result) => {
+  deleteSubject: async (req, res, result) => {
     const id = req.params.id;
 
-    const selecteQuestion = await question.selecteQuestion(id, res);
-    if (selecteQuestion == 0) {
+    const selectSubject = await subject.selectSubject(id, res);
+    if (selectSubject == 0) {
       errResponse(
         res,
         enums.http_codes.noRecordFound,
@@ -113,8 +107,8 @@ module.exports = {
       );
       return;
     }
-    const deleteQuestion = await question.deleteQuestion(id, res);
-    if (deleteQuestion == 0) {
+    const deleteSubject = await subject.deleteSubject(id, res);
+    if (deleteSubject != 0) {
       errResponse(
         res,
         enums.http_codes.InternalServerError,
@@ -133,25 +127,15 @@ module.exports = {
     );
   },
 
-  // ******************Update quetion**************************
-  updateQuestion: async (req, res, result) => {
-    var id = req.params.id;
-    var subject_id = req.body.subject_id;
-    var chapter_id = req.body.chapter_id;
+  // ******************Update Subject**************************
+  updateSubject: async (req, res, result) => {
     var title = req.body.title;
-    var description = req.body.description;
-    var tags = req.body.tags;
-
-    const updateQuestion = await question.updateQuestion(
-      id,
-      subject_id,
-      chapter_id,
-      title,
-      description,
-      tags
+    const updateSubject = await subject.updateSubject(
+      title
+      
     );
     
-    if (updateQuestion.length !== 0) {
+    if (updateSubject.length !== 0) {
       errResponse(
         res,
         enums.http_codes.BadRequest,
@@ -166,7 +150,7 @@ module.exports = {
       enums.http_codes.OK,
       config.successCode,
       messages.questionUpdated,
-      updateQuestion.rows
+      updateSubject.rows
     );
     return;
   },

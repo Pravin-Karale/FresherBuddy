@@ -10,12 +10,12 @@ module.exports = {
 // ****************** Add Articles **************************
 
 addArticleAuthor: async (req, res, result) => {
-    var author_name = req.body.author_name;
-    var author_email = req.body.author_email;
+    var name = req.body.name;
+    var email = req.body.email;
     
     const addArticleAuthor = await author.addArticleAuthor(
-        author_name,
-        author_email
+        name,
+        email
     );
     if (addArticleAuthor.length != 0) {
         console.log(addArticleAuthor,"addArticleAuthor");
@@ -50,7 +50,7 @@ addArticleAuthor: async (req, res, result) => {
       pageSize,
       res
     );
-  
+
    
     if (articleAutherListResponce.length == 0) {
       console.log(articleAutherListResponce,"articleAutherListResponce");
