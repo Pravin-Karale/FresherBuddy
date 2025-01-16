@@ -12,10 +12,10 @@ module.exports = {
   getSubjectList: (pageNo, pageSize, res) => {
     return new Promise((resolve, reject) => {
       var queryStatement = `SELECT id, title, status FROM fresher_buddy_schema.subjects ORDER BY id DESC LIMIT ${pageSize} OFFSET (${pageNo}-1) * ${pageSize};`;
-      console.log('queryStatement', queryStatement);
       
       connection.query(queryStatement, (error, result) => {
         if (error) {
+          console.log(error);
           errResponse(
             res,
             enums.http_codes.InternalServerError,
@@ -32,13 +32,12 @@ module.exports = {
 
   // ****************** Add Subject **************************
 
-  addSubject: (title,status,res) => {
+  addSubject: (title,res) => {
     return new Promise((resolve, reject) => {
-      const queryStatment =`INSERT INTO fresher_buddy_schema.subjects(title,status) VALUES ($1,$2)RETURNING id ;`
-     
+      const queryStatment =`INSERT INTO fresher_buddy_schema.subjects(title) VALUES ($1)RETURNING id ;`
       connection.query(
         queryStatment,
-        [title,status],
+        [title],
         (error, subject) => {
           if (error) {
             errResponse(
@@ -72,7 +71,7 @@ module.exports = {
             errResponse(
               res,
               statusCode.Internal_Server_Error,
-              config.errCodeError,
+              config.errorCode,
               messages.serverErrorMessage,
               ""
             );
@@ -112,8 +111,8 @@ module.exports = {
           errResponse(
             res,
             enums.http_codes.InternalServerError,
-            config.errCodeNoRecordFound,
-            messages.questionDeleteError,
+            config.errorCode,
+            messages.NoRecordFound,
             messages.emptyString
           );
           return;
@@ -124,13 +123,14 @@ module.exports = {
   },
 
   // ******************Update Subject**************************
-  updateSubject: (id, subject_id, chapter_id, title, description, tags, res) => {
+  updateSubject: (id,title, res) => {
     return new Promise((resolve, reject) => {
-      const queryStatment =`UPDATE fresher_buddy_schema.subjects SET  title=$2 WHERE id = $1 AND status = 1;`
+      const queryStatment =`UPDATE fresher_buddy_schema.subjects SET title=$2 WHERE id=$1 AND status=1`
+	
       connection.query(
         queryStatment,
-        [id, subject_id, chapter_id, title, description, tags ],
-        (error, updateQuestion) => {
+        [id,title],
+        (error, updateSubject) => {
           console.log(error, "error");
           if (error) {
             errResponse(

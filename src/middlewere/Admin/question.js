@@ -18,8 +18,6 @@ module.exports={
         });
         if (schema.validate(req.body).error) {
             let error = schema.validate(req.body).error
-            console.log(error,"error");
-            
             errResponce(res,enums.http_codes.BadRequest,config.errorCode,messages.NoRecordFound,messages.emptyString)
             return;
         } else {
@@ -39,7 +37,6 @@ module.exports={
         });
         if(schema.validate(req.body).error){
             console.log(error,"error");
-            
             let error=schema.validate(req.body).error
             errResponce(res,enums.http_codes.BadRequest,config.errorCode,messages.NoRecordFound,messages.emptyString)
             return

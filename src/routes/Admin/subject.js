@@ -1,12 +1,10 @@
 const validationMiddleware = require("../../middlewere/Admin/subject");
 const subject = require("../../controller/Admin/subject");
 
-module.exports = function (app) {
+module.exports = (app) => {
 
-  // ****************** Subject Lists ************************
-  app.get("/apis/subject/:pageNo/:pageSize", (req, res) => {
-    console.log('iamhere');
-    
+  // ****************** Subject Lists ***********************
+  app.get("/apis/subjects/:pageNo/:pageSize", (req, res) => {    
     subject.getSubjectList(req, res);
   });
 

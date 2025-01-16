@@ -16,14 +16,14 @@ module.exports = {
       pageSize,
       res
     );
-
+    
     if (getSubjectList.length == 0) {
       errResponse(
         res,
         enums.http_codes.BadRequest,
         config.errorCode,
-        messages.questionError,
-        messages.NoRecordFound
+        messages.NoRecordFound,
+        messages.emptyString
       );
       return;
     }
@@ -31,7 +31,7 @@ module.exports = {
       res,
       enums.http_codes.OK,
       config.successCode,
-      messages.getquestionList,
+      messages.getSubjectList,
       getSubjectList
     );
     return;
@@ -42,18 +42,17 @@ module.exports = {
   addSubject: async (req, res, result) => {
 
     let title = req.body.title;
-    let status=req.body.status
+  
     const addSubject = await subject.addSubject(
-      title,
-      status
+      title
     );
-    if (addSubject.length !== 0) {
+    if (addSubject.length == 0) { 
       errResponse(
         res,
         enums.http_codes.BadRequest,
         config.errorCode,
-        messages.questionError,
-        messages.authenticationFeild
+        messages.NoRecordFound,
+        messages.emptyString
       );
       return;
     }
@@ -61,7 +60,7 @@ module.exports = {
       res,
       enums.http_codes.OK,
       config.successCode,
-      messages.questionAdded,
+      messages.subjectAdded,
       messages.emptyString
     );
     return;
@@ -76,8 +75,8 @@ module.exports = {
         res,
         enums.http_codes.BadRequest,
         config.errorCode,
-        messages.questionError,
-        messages.NoRecordFound
+        messages.NoRecordFound,
+        messages.emptyString
       );
       return;
     }
@@ -85,8 +84,8 @@ module.exports = {
       res,
       enums.http_codes.OK,
       config.successCode,
-      messages.getQuestionDeatails,
-      getquestion
+      messages.getSubjectDeatails,
+      getSubjectDetails
     );
     return;
   },
@@ -122,17 +121,17 @@ module.exports = {
       res,
       enums.http_codes.OK,
       config.successCode,
-      messages.questionDeleted,
+      messages.SubjectDeleted,
       messages.emptyString
     );
   },
 
   // ******************Update Subject**************************
   updateSubject: async (req, res, result) => {
+    var id = req.params.id;
     var title = req.body.title;
     const updateSubject = await subject.updateSubject(
-      title
-      
+      id,title
     );
     
     if (updateSubject.length !== 0) {

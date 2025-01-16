@@ -18,8 +18,6 @@ addArticleAuthor: async (req, res, result) => {
         email
     );
     if (addArticleAuthor.length != 0) {
-        console.log(addArticleAuthor,"addArticleAuthor");
-        
       errResponse(
         res,
         enums.http_codes.BadRequest,
@@ -50,11 +48,7 @@ addArticleAuthor: async (req, res, result) => {
       pageSize,
       res
     );
-
-   
-    if (articleAutherListResponce.length == 0) {
-      console.log(articleAutherListResponce,"articleAutherListResponce");
-      
+    if (articleAutherListResponce.length == 0) {      
       errResponse(
         res,
         enums.http_codes.BadRequest,

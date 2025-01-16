@@ -27,7 +27,6 @@ module.exports={
    
    updateSubject:(req,res,next)=>{
         const schema=Joi.object().keys({
-            subject_id: Joi.number().integer().min(1).required(),
             title: Joi.string().min(1).required() 
         });
         if(schema.validate(req.body).error){
@@ -46,7 +45,6 @@ module.exports={
         const schema=Joi.object().keys({
             id:Joi.number().integer().min(1).required()
         })
-        console.log(req.params,"req.params");
         if (schema.validate(req.params).error) {
             let error = schema.validate(req.params).error
             errResponce(res,enums.http_codes.BadRequest,config.errorCode,messages.NoRecordFound,messages.emptyString)

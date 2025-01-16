@@ -27,7 +27,6 @@ module.exports = {
             );
             return;
           }
-          console.log(author,"author");
           resolve(author.rows);
         }
       )
